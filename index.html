@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iPhone 15 Pro Promotion</title>
+  <style>
+    body {font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; color: #333; text-align: center;}
+    .container {max-width: 600px; margin: 50px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);}
+    img {max-width: 100%; height: auto;}
+    h1 {color: #2e7d32;}
+    button {background-color: #1976d2; color: white; border: none; padding: 15px 25px; margin: 10px 5px; font-size: 16px; border-radius: 8px; cursor: pointer;}
+    button:hover {background-color: #1565c0;}
+    .gift-boxes {display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0;}
+    .gift-boxes button {font-size: 30px; padding: 30px;}
+    .opened-box img {width: 50px;}
+    input, select {display: block; width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;}
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Congratulations!</h1>
+    <p>You have been selected to participate in the promotion from Takealot.<br>
+      You have a chance to win an iPhone 15 Pro for only R200.</p>
+    <img src="iphone.jpg" alt="iPhone 15 Pro">
+    <p><strong>To receive your iPhone 15 Pro, you need to complete the survey to confirm you are a real person.</strong><br>
+    Hurry up, the number of lots is limited!</p>
+    <button onclick="showQuestions()">Start Survey</button>
+
+    <div id="questions" class="hidden">
+      <p>Question 1 of 3: Are you from South Africa?</p>
+      <button onclick="nextQuestion(2)">Yes</button>
+      <button onclick="endSurvey()">No</button>
+      <div id="q2" class="hidden">
+        <p>Question 2 of 3: Did you buy something online recently?</p>
+        <button onclick="nextQuestion(3)">Yes</button>
+        <button onclick="endSurvey()">No</button>
+      </div>
+      <div id="q3" class="hidden">
+        <p>Question 3 of 3: Would you like to receive the iPhone 15 Pro for R200?</p>
+        <button onclick="showGiftGame()">Yes</button>
+        <button onclick="endSurvey()">No</button>
+      </div>
+    </div>
+
+    <div id="commentSection" class="hidden">
+      <h3>Leave a Comment:</h3>
+      <textarea rows="4" style="width:100%;"></textarea>
+      <button>Submit</button>
+    </div>
+  
+<div id="customCommentSection" style="margin-top:20px;text-align:left;">
+  <h3>Community Comments</h3>
+  <textarea id="commentInput" rows="3" placeholder="Write your comment..." style="width:100%;"></textarea>
+  <input type="file" id="commentPhoto" accept="image/*" style="margin:10px 0;">
+  <button onclick="submitCustomComment()" style="background:#1976d2;color:white;border:none;padding:10px 20px;border-radius:5px;">Post Comment</button>
+  <div id="customCommentsList" style="margin-top:15px;"></div>
+</div>
+
+
+</div>
+
+  <div class="container hidden" id="giftGame">
+    <p>Congratulations, you've successfully verified you're a real person.<br>Now you can get iPhone 15 Pro!<br>Choose the right gift box. You have 3 tries. Good luck!</p>
+    <div class="gift-boxes" id="giftBoxes"></div>
+    <div id="giftMessage"></div>
+  </div>
+
+  <div class="container hidden" id="formSection">
+    <h2>Congratulations! You've won!</h2>
+    <img src="iphone.jpg" alt="iPhone 15 Pro">
+    <p>1) Click on 'Apply now'.<br>2) Fill in the form and pay for delivery.<br>3) Delivery within 3 to 5 working days.</p>
+    <button onclick="showForm()">Apply Now</button>
+  </div>
+
+  <div class="container hidden" id="formPage">
+    <h3>Fill in your details</h3>
+    <input type="text" placeholder="First Name" id="firstName">
+    <input type="text" placeholder="Last Name" id="lastName">
+    <input type="text" placeholder="Address" id="address">
+    <input type="text" placeholder="Postal Code" id="postal">
+    <input type="text" placeholder="City" id="city">
+    <input type="text" placeholder="Contact Number" id="contact">
+    <input type="email" placeholder="Email" id="email">
+    <button onclick="validateAndProceed()">Continue</button>
+  </div>
+
+  <div class="container hidden" id="paymentPage">
+    <h2>Final Step</h2>
+    <p>Please proceed to pay the R200 delivery fee to receive your iPhone 15 Pro.<br>Delivery in 3 to 5 working days.</p>
+    <img src="iphone.jpg" alt="iPhone 15 Pro" style="width:100px;">
+    <p><strong>Guide:</strong> Click the blue 'Support' button under 'Enjoy this post'. Put <strong>$12</strong> as the amount, write your name, and click 'Support' to complete the winning process for your iPhone 15 Pro.</p>
+<button onclick="location.href='https://buymeacoffee.com/terro/claim-your-iphone-15-pro-r200'">Pay Now</button>
+  </div>
+
+  <script>
+    function showQuestions() {
+      document.getElementById("questions").classList.remove("hidden");
+    }
+    function nextQuestion(q) {
+      if(q === 2) document.getElementById("q2").classList.remove("hidden");
+      if(q === 3) document.getElementById("q3").classList.remove("hidden");
+      if(q === 3) document.getElementById("commentSection").classList.remove("hidden");
+    }
+    function endSurvey() {
+      alert("Sorry, this offer is only for selected participants.");
+      location.reload();
+    }
+    function showGiftGame() {
+      document.querySelector('.container').classList.add("hidden");
+      document.getElementById("giftGame").classList.remove("hidden");
+      generateGiftBoxes();
+    }
+
+    let tries = 0;
+    let maxTries = 3;
+    let winners = [];
+
+    function generateGiftBoxes() {
+      const boxContainer = document.getElementById("giftBoxes");
+      boxContainer.innerHTML = "";
+      winners = Array(9).fill(false);
+      let winCount = 0;
+      while(winCount < 1){ let i = Math.floor(Math.random()*9); if(!winners[i]){ winners[i] = true; winCount++; } }
+      for(let i=0; i<9; i++){
+        const btn = document.createElement("button");
+        btn.innerText = "🎁";
+        btn.onclick = () => pickBox(btn, i);
+        boxContainer.appendChild(btn);
+      }
+    }
+
+    function pickBox(btn, index) {
+      if(btn.classList.contains("opened-box") || tries >= 3) return;
+      tries++;
+      btn.classList.add("opened-box");
+      if(tries === 3) {
+        btn.innerHTML = '<img src="iphone.jpg">';
+        setTimeout(()=>{
+          document.getElementById("giftGame").classList.add("hidden");
+          document.getElementById("formSection").classList.remove("hidden");
+        },1000);
+      } else {
+        btn.innerHTML = "Empty";
+      }
+      return;
+
+      if(tries >= maxTries || btn.classList.contains("opened-box")) return;
+      btn.classList.add("opened-box");
+      btn.innerHTML = winners[index] ? '<img src="iphone.jpg">' : "Empty";
+      tries++;
+      if(winners[index]){
+        setTimeout(()=>{
+          document.getElementById("giftGame").classList.add("hidden");
+          document.getElementById("formSection").classList.remove("hidden");
+        },1000);
+      }
+    }
+
+    function showForm() {
+      document.getElementById("formSection").classList.add("hidden");
+      document.getElementById("formPage").classList.remove("hidden");
+    }
+
+    function validateAndProceed() {
+      let valid = true;
+      ["firstName","lastName","address","postal","city","contact","email"].forEach(id => {
+        if(!document.getElementById(id).value) valid = false;
+      });
+      if(!valid) {
+        alert("Please fill in all details.");
+        return;
+      }
+      document.getElementById("formPage").classList.add("hidden");
+      document.getElementById("paymentPage").classList.remove("hidden");
+    }
+  
+function submitCustomComment() {
+  const text = document.getElementById("commentInput").value;
+  const file = document.getElementById("commentPhoto").files[0];
+  const commentsList = document.getElementById("customCommentsList");
+
+  const div = document.createElement("div");
+  div.style.border = "1px solid #ccc";
+  div.style.padding = "10px";
+  div.style.margin = "10px 0";
+  div.style.borderRadius = "8px";
+  div.innerHTML = `<p>${text}</p>`;
+
+  if(file) {
+    div.innerHTML += `<p><strong>Photo uploaded.</strong></p>`;
+  }
+
+  const likeButton = document.createElement("button");
+  likeButton.innerHTML = "&#128077; Like 0";
+  likeButton.style.backgroundColor = "#1976d2";
+  likeButton.style.color = "white";
+  likeButton.style.border = "none";
+  likeButton.style.padding = "5px 10px";
+  likeButton.style.marginTop = "5px";
+  likeButton.style.borderRadius = "5px";
+
+  let count = 0;
+  likeButton.onclick = function() {
+    count++;
+    likeButton.innerHTML = `&#128077; Like ${count}`;
+  };
+
+  div.appendChild(likeButton);
+  commentsList.prepend(div);
+}
+
+</script>
+</body>
+</html>
